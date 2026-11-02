@@ -1,0 +1,25 @@
+.git
+.env
+*.log
+*.log.err
+__pycache__
+*.pyc
+
+# Training-only data (too large, not needed to serve)
+data/ratings.csv
+data/tags.csv
+data/links.csv
+test_ratings.npz
+training_history.npz
+tune_results.json
+learning.md
+*.png
+
+# Build artifacts rebuilt inside Docker
+frontend/node_modules
+frontend/dist
+
+# Dev files
+.vscode
+src/__pycache__
+backend/__pycache__

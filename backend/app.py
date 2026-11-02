@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, send_from_directory
 from flask_cors import CORS
 
 import numpy as np
@@ -6,6 +6,8 @@ import pandas as pd
 import os
 import traceback
 from pathlib import Path
+
+FRONTEND_DIST = Path(__file__).resolve().parent.parent / "frontend" / "dist"
 
 
 # ============================================================
@@ -556,7 +558,7 @@ def apply_mood_filter(
 
 
 # ============================================================
-# HOME
+# HOME — serve React app when built, API info otherwise
 # ============================================================
 
 @app.route(
@@ -564,6 +566,15 @@ def apply_mood_filter(
     methods=["GET"]
 )
 def home():
+
+    index = FRONTEND_DIST / "index.html"
+
+    if index.exists():
+
+        return send_from_directory(
+            FRONTEND_DIST,
+            "index.html"
+        )
 
     return jsonify({
         "message":
@@ -1301,6 +1312,42 @@ def recommend():
                 "recommendations. Please try again."
 
         }), 500
+
+
+# ============================================================
+# START SERVER
+# ============================================================
+
+# ============================================================
+# STATIC ASSETS + SPA FALLBACK (production)
+# ============================================================
+
+@app.route(
+    "/<path:filename>",
+    methods=["GET"]
+)
+def static_files(filename):
+
+    full = FRONTEND_DIST / filename
+
+    if full.is_file():
+
+        return send_from_directory(
+            FRONTEND_DIST,
+            filename
+        )
+
+    # SPA fallback: unknown paths get index.html
+    index = FRONTEND_DIST / "index.html"
+
+    if index.exists():
+
+        return send_from_directory(
+            FRONTEND_DIST,
+            "index.html"
+        )
+
+    return jsonify({"error": "Not found"}), 404
 
 
 # ============================================================
