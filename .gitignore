@@ -1,0 +1,25 @@
+.streamlit/secrets.toml
+.env
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Editors / tooling
+.vscode/
+.idea/
+.kilo/
+*.log
+*.log.err
+
+# Build output
+dist/
+dist-ssr/
+*.local
+
+
+# Training data only (too large for git); movies.csv is required at runtime
+data/ratings.csv
+data/tags.csv
+data/links.csv
